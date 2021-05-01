@@ -41,7 +41,7 @@ unsigned short temp;
     while(temp--);
       
     LCD_WRITE(0x30, LCD_CONTROL_WRITE);
-    IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
+    //IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
     temp = 2000;
     while(temp--);
 
@@ -56,7 +56,7 @@ unsigned short temp;
     LCD_WRITE(0x0C, LCD_CONTROL_WRITE);
     LCD_WRITE(0x06, LCD_CONTROL_WRITE);
     LCD_WRITE(0x01, LCD_CONTROL_WRITE);
-    IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
+    //IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
     temp = 10000;
     while(temp--);       
 
@@ -76,7 +76,7 @@ void  SET_LCD_POS(char row, char col)
         col |= BIT7;
         
         LCD_WRITE(col, LCD_CONTROL_WRITE);
-        IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
+        //IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
 }
 
 void  LCD_PRINT(char * str)
@@ -88,7 +88,7 @@ void  LCD_PRINT(char * str)
     str++;
   }
   
-  IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
+  //IE2 |= LCD_SPI_TX_INTERRUPT_ENABLE;
 }
 
 /* Purpose of Function – sends a byte over spi port                     
@@ -100,9 +100,14 @@ void LCD_WRITE(char lcd_data, unsigned int write_type)
   write_type &= LCD_CONTROL_WRITE;  // mask out all other bits that may have been set in error
   write_type |= (unsigned int) lcd_data;
   
-  ringbuffer_enqueue(&lcd_write_rb, write_type);
-  
-
+  //ringbuffer_enqueue(&lcd_write_rb, write_type);
+  if(write_type = LCD_CONTROL_WRITE)
+    SET_WRITE_MODE_CONTROL();
+   else
+    SET_WRITE_MODE_DATA();
+        
+   LCD_SPI_TX_PORT = lcd_data;
+   while(!(LCD_SPI_TX_STATUS & IFG2));
   
 }
 
