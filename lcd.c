@@ -13,28 +13,31 @@
 // Define MSP430 HW
 #define _LCD_RST_OUT_PORT P1OUT
 #define _LCD_RST_DIR_PORT P1DIR
-#define _LCD_RST_PIN BIT1
+#define _LCD_RST_PIN BIT6
 
 #define _LCD_REG_OUT_PORT P1OUT
 #define _LCD_REG_DIR_PORT P1DIR
-#define _LCD_REG_PIN BIT5
+#define _LCD_REG_PIN BIT4
+
+#define LCD_SPI_TX_PORT UCB0TXBUF // UCA0TXBUF
+#define LCD_SPI_TX_STATUS UCB0TXIFG // UCA0TXIFG
 
 
 void LCD_WRITE(char lcd_data);
 
 void  INIT_LCD(void)
 {
-short temp;
+unsigned short temp;
     // CONFIG SPI
 
-    P1SEL |= BIT2 + BIT4;
-    P1SEL2 |= BIT2 + BIT4;
-    UCA0CTL0 |= (UCCKPL | UCMSB | UCMST | UCSYNC);    // 3-pin, 8-bit SPI master
-    UCA0CTL1 |= UCSSEL_2;                           // SMCLK
-    UCA0BR0 |= 0x02;                               // /2
-    UCA0BR1 = 0;                                    
-    UCA0MCTL = 0;                                   // No modulation
-    UCA0CTL1 &= ~UCSWRST;                           // **Initialize USCI state machine**
+    P1SEL |= BIT5 + BIT7;
+    P1SEL2 |= BIT5 + BIT7;
+    UCB0CTL0 |= (UCCKPL | UCMSB | UCMST | UCSYNC);    // 3-pin, 8-bit SPI master
+    UCB0CTL1 |= UCSSEL_2;                           // SMCLK
+    UCB0BR0 |= 0x02;                               // /2
+    UCB0BR1 |= 0x0;                                    
+    //UCB0MCTL = 0;                                   // No modulation
+    UCB0CTL1 &= ~UCSWRST;                           // **Initialize USCI state machine**
 
     // CONFIG RESET PIN
     _LCD_RST_DIR_PORT |= _LCD_RST_PIN;
@@ -85,13 +88,13 @@ void  SET_LCD_POS(char row, char col)
         if(row == 2)
           col |= BIT6;
         col |= BIT7;
-        _LCD_REG_OUT_PORT &= ~_LCD_REG_PIN;
+        _LCD_REG_OUT_PORT &= ~_LCD_REG_PIN; 
         LCD_WRITE(col);
 }
 
 void  LCD_PRINT(char * str)
 {
-  _LCD_REG_OUT_PORT |= _LCD_REG_PIN;
+  _LCD_REG_OUT_PORT |= _LCD_REG_PIN;   
   while(*str != 0x00)
   {
     LCD_WRITE(*str);
@@ -105,7 +108,7 @@ void  LCD_PRINT(char * str)
 */
 void LCD_WRITE(char lcd_data)
 {
-  UCA0TXBUF = lcd_data;
-  while(!(UCA0TXIFG & IFG2));
+  LCD_SPI_TX_PORT = lcd_data;
+  while(!(LCD_SPI_TX_STATUS & IFG2));
   
 }
