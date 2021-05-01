@@ -1,4 +1,4 @@
-#include "io430.h"
+#include "msp430.h"
 
 unsigned int countdown1 = 0;
 unsigned int countup1   = 0;

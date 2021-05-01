@@ -53,9 +53,9 @@ bool ringbuffer_isempty(RingBuffer_TypeDef *rb)
 /**
  *  "gets" data from the ring buffer and adjusts the tail
 **/
-unsigned char ringbuffer_dequeue(RingBuffer_TypeDef *rb)
+unsigned int ringbuffer_dequeue(RingBuffer_TypeDef *rb)
 {
-unsigned char retval;
+unsigned int retval;
  
 
   retval = rb->array[rb->tail++];
@@ -73,11 +73,11 @@ unsigned char retval;
 /**
  *  "puts" data into the ring buffer and adjusts the head
 **/
-bool ringbuffer_enqueue(RingBuffer_TypeDef *rb, unsigned char bytedata)
+bool ringbuffer_enqueue(RingBuffer_TypeDef *rb, unsigned int data)
 { 
     // if buffer is not full read the receive data register and increment tail pointer.
     if( ringbuffer_isfull(rb) == FALSE )
-      rb->array[rb->head++] = bytedata;
+      rb->array[rb->head++] = data;
     else
       return(FALSE);
     

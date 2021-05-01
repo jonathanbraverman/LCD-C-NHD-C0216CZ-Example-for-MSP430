@@ -1,6 +1,7 @@
 // serial.c 
-#include "io430.h"
+#include "msp430.h"
 #include "ring_buffer.h"                // ADD include
+#include "lcd.h"
 
 
 extern RingBuffer_TypeDef rx_data_rb;   // ADD extern 
@@ -50,11 +51,24 @@ unsigned char databyte;
 #pragma vector=USCIAB0TX_VECTOR
 __interrupt void USCI_TX_ISR(void)
 {
-  if(ringbuffer_isempty(&tx_data_rb) == FALSE)
-    UCA0TXBUF = ringbuffer_dequeue(&tx_data_rb);
+  unsigned int data;
+  if(IFG2 & UCA0TXIFG)  // USING UCA0 AS INTERRUPT DRIVEN SPI FOR LCD
+  {
+    if(ringbuffer_isempty(&lcd_write_rb) == FALSE)
+    {
+      data = ringbuffer_dequeue(&lcd_write_rb);
+      if(data & LCD_CONTROL_WRITE)
+        SET_WRITE_MODE_CONTROL();
+      else
+        SET_WRITE_MODE_DATA();
+        
+      UCA0TXBUF = data & 0xFF;
+    }
+    else
+      IE2 &= ~UCA0TXIE;                               // Disable USCI_A0 TX interrupt  
+  }
   else
-    IE2 &= ~UCA0TXIE;                               // Disable USCI_A0 TX interrupt
-  
-
-  
+  {
+    
+  }
 }

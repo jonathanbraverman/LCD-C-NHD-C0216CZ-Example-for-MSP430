@@ -48,8 +48,9 @@
 #define _LCD_REG_DIR_PORT P1DIR
 #define _LCD_REG_PIN BIT4
 
-#define LCD_SPI_TX_PORT UCB0TXBUF // UCA0TXBUF
-#define LCD_SPI_TX_STATUS UCB0TXIFG // UCA0TXIFG
+#define LCD_SPI_TX_PORT UCA0TXBUF // UCA0TXBUF
+#define LCD_SPI_TX_STATUS UCA0TXIFG // UCA0TXIFG
+#define LCD_SPI_TX_INTERRUPT_ENABLE UCA0TXIE
 
 // PWM VALUES
 #define MTRDRIVE_PERIOD  511    // MOTOR DRIVE PERIOD - 1 
@@ -75,7 +76,7 @@ void toggleLED1 ( void);
 void configUSCI_A0_uart( void );
 void configUSCI_A0_uart_listener( void );
 void configUSCI_A0_spi_writeonly(void);
-void configUSCI_B0_spi_writeonly(void );
+void configUSCI_B0_spi_writeonly(void);
 int getTA1BIT3(void);
 void triggerOn(void);
 void triggerOff(void);

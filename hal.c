@@ -19,16 +19,16 @@
 ;      P1       7 6 5 4 3 2 1 0
 ;               | | | | | | | |
 ;               | | | | | | | - LED
-;               | | | | | | --- UART_RX
-;               | | | | | ----- UART_TX
+;               | | | | | | --- RST
+;               | | | | | ----- SPI_MOSI
 ;               | | | | ------- PB
-;               | | | ---------  
-;               | | ----------- SPI_CLK
+;               | | | --------- SPI_CLK
+;               | | ----------- REG_SELECT
 ;               | -------------
-;               --------------- SPI_SIMO
+;               ---------------
 ****************************************************************************** */
 
-#include "io430.h"
+#include "msp430.h"
 #include "hal.h"
 
 void configGPIO( void )
@@ -103,11 +103,7 @@ void configUSCI_A0_spi_writeonly(void)
   // CONFIG SPI
   P1SEL |= BIT2 + BIT4;
   P1SEL2 |= BIT2 + BIT4;
-  //UCA0CTL0 |= (UCCKPL | UCMSB | UCMST | UCSYNC);    // 3-pin, 8-bit SPI master
-  UCA0CTL0__SPI_bit.UCCKPL = 1;
-  UCA0CTL0__SPI_bit.UCMSB = 1;
-  UCA0CTL0__SPI_bit.UCMST = 1;
-  UCA0CTL0__SPI_bit.UCSYNC = 1;
+  UCA0CTL0 |= (UCCKPL | UCMSB | UCMST | UCSYNC);    // 3-pin, 8-bit SPI master
   
   UCA0CTL1 |= UCSSEL_2;                           // SMCLK
   UCA0BR0 |= 0x02;                               // /2
@@ -122,11 +118,7 @@ void configUSCI_B0_spi_writeonly( void )
 {
     P1SEL |= BIT5 + BIT7;
     P1SEL2 |= BIT5 + BIT7;
-    //UCB0CTL0 |= (UCCKPL | UCMSB | UCMST | UCSYNC);    // 3-pin, 8-bit SPI master
-    UCB0CTL0__SPI_bit.UCCKPL = 1;
-    UCB0CTL0__SPI_bit.UCMSB = 1;
-    UCB0CTL0__SPI_bit.UCMST = 1;
-    UCB0CTL0__SPI_bit.UCSYNC = 1;    
+    UCB0CTL0 |= (UCCKPL | UCMSB | UCMST | UCSYNC);    // 3-pin, 8-bit SPI master
     UCB0CTL1 |= UCSSEL_2;                           // SMCLK
     UCB0BR0 |= 0x20;                               // /16
     UCB0BR1 = 0;                                    

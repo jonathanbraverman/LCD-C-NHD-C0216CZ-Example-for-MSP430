@@ -28,25 +28,24 @@ char number[10] = {'0',0x00};
   WDTCTL = WDTPW + WDTHOLD;
   //BCSCTL1 = CALBC1_8MHZ;                       // Set DCO to 8MHz
   //DCOCTL =  CALDCO_8MHZ; 
-  
-  
-  INIT_LCD();
-  
+   
   configGPIO();
   configTIMERA0();
   //configTIMERA1asPWM();
-  configTIMERA1asCAPTURE();
-  configUSCI_A0_uart();
+  //configTIMERA1asCAPTURE();
+  //configUSCI_A0_uart();
   
   _BIS_SR(GIE);                 // Enable interrupt
 
+  INIT_LCD();
+  
   SET_LCD_POS(1, pos);
   
   LCD_PRINT("hello");
   
-  SET_LCD_POS(2, pos);
+ // SET_LCD_POS(2, pos);
       
-  LCD_PRINT("world");
+ // LCD_PRINT("world");
   
   pos = 6;
   
@@ -56,36 +55,36 @@ char number[10] = {'0',0x00};
 
     if(getCountDown1() == 0)
     {
-      sendResponse(1, 1,2,3,4);
-      setCountDown1(10);
+      //sendResponse(1, 1,2,3,4);
+      //setCountDown1(10);
 
-      triggerOn();
-      sw_delay(1);
-      triggerOff();      
+      //triggerOn();
+      //sw_delay(1);
+     // triggerOff();      
     }
     
     
-    SimpleSerialHandler();
+   // SimpleSerialHandler();
 
     
-    if(new_command)
-    {
-    //  command_source 
-   // command[0]
-   // command[1]
-   // command[2]
-   // command[3] 
-    sprintf(number, "%04d", distance);
-    SET_LCD_POS(1, 10);
-    LCD_PRINT(number);
-      
-    SET_LCD_POS(2, 10);
-    sprintf(number, "%03d", distance/148);
-    LCD_PRINT(number);
-    
-    new_command = FALSE;
-    
-    }
+//    if(new_command)
+//    {
+//    //  command_source 
+//   // command[0]
+//   // command[1]
+//   // command[2]
+//   // command[3] 
+//    sprintf(number, "%04d", distance);
+//    SET_LCD_POS(1, 10);
+//    LCD_PRINT(number);
+//      
+//    SET_LCD_POS(2, 10);
+//    sprintf(number, "%03d", distance/148);
+//    LCD_PRINT(number);
+//    
+//    new_command = FALSE;
+//    
+//    }
     
     //sw_delay(100);
   }
